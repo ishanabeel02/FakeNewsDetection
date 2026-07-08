@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <base target="_self">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Factify AI - AI-Powered Fake News Detection</title>
+    <meta name="description" content="Detect fake news using artificial intelligence. Paste text or upload files to verify news authenticity in seconds.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8'
+                        },
+                        secondary: {
+                            100: '#f3e8ff',
+                            500: '#8b5cf6',
+                            600: '#7c3aed'
+                        },
+                        success: '#10b981',
+                        danger: '#ef4444'
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'sans-serif']
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.3s ease-out',
+                        'pulse-slow': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(10px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #f0f9ff 0%, #fdf4ff 100%);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .tab-active {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            color: white;
+        }
+        .result-real {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            border-color: #10b981;
+        }
+        .result-fake {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            border-color: #ef4444;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-white font-sans">
+    <!-- Navigation -->
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-sm shadow-sm">
+        <nav class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-secondary-500"></div>
+                    <span class="text-xl font-bold text-gray-800">Factify AI</span>
+                </div>
+
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#home" class="text-gray-600 hover:text-primary-600 font-medium transition-colors">Home</a>
+                    <a href="#how-it-works" class="text-gray-600 hover:text-primary-600 font-medium transition-colors">How It Works</a>
+                    <a href="#check-news" class="text-gray-600 hover:text-primary-600 font-medium transition-colors">Check News</a>
+                    <a href="#about" class="text-gray-600 hover:text-primary-600 font-medium transition-colors">About</a>
+                </div>
+
+                <button class="md:hidden text-gray-600">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <main>
+        <section id="home" class="gradient-bg py-16 md:py-24">
+            <div class="container mx-auto px-4">
+                <div class="max-w-4xl mx-auto text-center">
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
+                        Detect Fake News Using <span class="bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">Artificial Intelligence</span>
+                    </h1>
+                    <p class="text-xl text-gray-600 mb-10 max-w-2xl mx-auto">
+                        Paste text or upload files to verify news authenticity in seconds.
+                    </p>
+                    <a href="#check-news" class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-primary-600 to-secondary-600 text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                        <i class="fas fa-search mr-3"></i>
+                        Check News Now
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Check News Section -->
+        <section id="check-news" class="py-16 bg-white">
+            <div class="container mx-auto px-4">
+                <div class="max-w-6xl mx-auto">
+                    <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">
+                        Verify News Authenticity
+                    </h2>
+
+                    <!-- Input Tabs -->
+                    <div class="mb-8">
+                        <div class="flex flex-wrap justify-center gap-4 mb-8">
+                            <button onclick="switchTab('text')" id="text-tab" class="tab-active px-6 py-3 rounded-xl font-medium transition-all">
+                                <i class="fas fa-paste mr-2"></i>Paste Text
+                            </button>
+                            <button onclick="switchTab('file')" id="file-tab" class="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition-all">
+                                <i class="fas fa-file-upload mr-2"></i>Upload File
+                            </button>
+                        </div>
+
+                        <!-- Text Input -->
+                        <div id="text-input" class="card-hover bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+                            <div class="mb-4">
+                                <label class="block text-gray-700 font-medium mb-2">
+                                    <i class="fas fa-newspaper mr-2"></i>News Content
+                                </label>
+                                <textarea
+                                    id="news-text"
+                                    placeholder="Paste news content here..."
+                                    class="w-full h-64 p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
+                                ></textarea>
+                            </div>
+                        </div>
+
+                        <!-- File Input -->
+                        <div id="file-input-panel" class="hidden card-hover bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+                            <div class="text-center py-12">
+                                <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-primary-100 flex items-center justify-center">
+                                    <i class="fas fa-file-pdf text-3xl text-primary-600"></i>
+                                </div>
+                                <p class="text-gray-600 mb-6">Upload .txt or .pdf files containing news content</p>
+                                <label class="cursor-pointer inline-flex items-center px-6 py-3 bg-primary-500 text-white rounded-xl hover:bg-primary-600 transition-colors">
+                                    <i class="fas fa-cloud-upload-alt mr-3"></i>
+                                    Choose File
+                                    <input type="file" id="file-upload" accept=".txt,.pdf" class="hidden">
+                                </label>
+                                <p id="file-name-display" class="text-sm text-gray-600 mt-4"></p>
+                                <p class="text-sm text-gray-500 mt-2">Maximum file size: 10MB</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Analyze Button -->
+                    <div class="text-center mb-12">
+                        <button onclick="analyzeNews()" class="px-12 py-4 bg-gradient-to-r from-primary-600 to-secondary-600 text-white font-semibold text-lg rounded-xl hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                            <i class="fas fa-brain mr-3"></i>Analyze News
+                        </button>
+                    </div>
+
+                    <!-- Result Section -->
+                    <div id="result-section" class="hidden animate-fade-in">
+                        <h3 class="text-2xl font-bold text-center text-gray-900 mb-8">Analysis Result</h3>
+                        <div id="result-box" class="max-w-md mx-auto rounded-2xl border-2 p-8 text-center">
+                            <div id="result-icon" class="text-5xl mb-4"></div>
+                            <h4 id="result-title" class="text-2xl font-bold mb-2"></h4>
+                            <div id="confidence-score" class="text-4xl font-bold mb-4"></div>
+                            <p id="result-message" class="text-gray-600"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works Section -->
+        <section id="how-it-works" class="py-16 bg-gray-50">
+            <div class="container mx-auto px-4">
+                <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-16">
+                    How It Works
+                </h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                    <!-- Step 1 -->
+                    <div class="card-hover bg-white rounded-2xl shadow-lg p-8 text-center">
+                        <div class="w-16 h-16 mx-auto mb-6 rounded-full bg-primary-100 flex items-center justify-center">
+                            <span class="text-2xl font-bold text-primary-600">1</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-4">Provide Content</h3>
+                        <p class="text-gray-600">
+                            User provides news content through text input or file upload.
+                        </p>
+                        <div class="mt-6">
+                            <i class="fas fa-keyboard text-3xl text-primary-500"></i>
+                            <i class="fas fa-file-alt text-3xl text-primary-500 mx-4"></i>
+                        </div>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="card-hover bg-white rounded-2xl shadow-lg p-8 text-center">
+                        <div class="w-16 h-16 mx-auto mb-6 rounded-full bg-secondary-100 flex items-center justify-center">
+                            <span class="text-2xl font-bold text-secondary-600">2</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-4">AI Analysis</h3>
+                        <p class="text-gray-600">
+                            Advanced AI models analyze content using NLP, machine learning, and pattern recognition algorithms.
+                        </p>
+                        <div class="mt-6">
+                            <i class="fas fa-brain text-3xl text-secondary-500"></i>
+                            <i class="fas fa-robot text-3xl text-secondary-500 mx-4"></i>
+                            <i class="fas fa-chart-line text-3xl text-secondary-500"></i>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="card-hover bg-white rounded-2xl shadow-lg p-8 text-center">
+                        <div class="w-16 h-16 mx-auto mb-6 rounded-full bg-success/20 flex items-center justify-center">
+                            <span class="text-2xl font-bold text-success">3</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-4">Get Results</h3>
+                        <p class="text-gray-600">
+                            System classifies news as real or fake with confidence score and detailed analysis report.
+                        </p>
+                        <div class="mt-6">
+                            <i class="fas fa-check-circle text-3xl text-success"></i>
+                            <i class="fas fa-times-circle text-3xl text-danger mx-4"></i>
+                            <i class="fas fa-chart-pie text-3xl text-gray-600"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="py-16 bg-white">
+            <div class="container mx-auto px-4">
+                <div class="max-w-4xl mx-auto text-center">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-8">
+                        About Factify AI
+                    </h2>
+                    <p class="text-lg text-gray-600 mb-12">
+                        Factify AI is an advanced fake news detection system developed as a final year AI/ML project.
+                        Our system combines state-of-the-art natural language processing and machine
+                        learning algorithms to combat misinformation and promote digital literacy.
+                    </p>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-2xl mx-auto">
+                        <div class="bg-gray-50 rounded-xl p-6">
+                            <i class="fas fa-shield-alt text-3xl text-primary-600 mb-4"></i>
+                            <p class="font-semibold">Accuracy</p>
+                        </div>
+                        <div class="bg-gray-50 rounded-xl p-6">
+                            <i class="fas fa-bolt text-3xl text-primary-600 mb-4"></i>
+                            <p class="font-semibold">Speed</p>
+                        </div>
+                        <div class="bg-gray-50 rounded-xl p-6">
+                            <i class="fas fa-lock text-3xl text-primary-600 mb-4"></i>
+                            <p class="font-semibold">Security</p>
+                        </div>
+                        <div class="bg-gray-50 rounded-xl p-6">
+                            <i class="fas fa-users text-3xl text-primary-600 mb-4"></i>
+                            <p class="font-semibold">Accessibility</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-6 md:mb-0">
+                    <div class="flex items-center space-x-2 mb-4">
+                        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-secondary-500"></div>
+                        <span class="text-xl font-bold">Factify AI</span>
+                    </div>
+                    <p class="text-gray-400">
+                        Powered by Machine Learning & NLP
+                    </p>
+                </div>
+
+                <div class="flex space-x-6">
+                    <a href="https://github.com/ishanabeel02/" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fab fa-github text-2xl"></i>
+                    </a>
+
+                    <a href="https://www.linkedin.com/in/isha-nabeel-bb0a51216/" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fab fa-linkedin text-2xl"></i>
+                    </a>
+
+                </div>
+            </div>
+
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-500 text-sm">
+                <p>&copy; 2025 Factify AI.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+    function switchTab(tab) {
+        const textTab = document.getElementById('text-tab');
+        const fileTab = document.getElementById('file-tab');
+        const textInput = document.getElementById('text-input');
+        const fileInputPanel = document.getElementById('file-input-panel');
+
+        if (tab === 'text') {
+            textTab.classList.add('tab-active');
+            textTab.classList.remove('bg-gray-100', 'text-gray-700');
+            fileTab.classList.remove('tab-active');
+            fileTab.classList.add('bg-gray-100', 'text-gray-700');
+            textInput.classList.remove('hidden');
+            fileInputPanel.classList.add('hidden');
+        } else {
+            fileTab.classList.add('tab-active');
+            fileTab.classList.remove('bg-gray-100', 'text-gray-700');
+            textTab.classList.remove('tab-active');
+            textTab.classList.add('bg-gray-100', 'text-gray-700');
+            fileInputPanel.classList.remove('hidden');
+            textInput.classList.add('hidden');
+        }
+    }
+
+    // Show the chosen filename so the user gets feedback after picking a file
+    document.addEventListener('DOMContentLoaded', () => {
+        const fileUpload = document.getElementById('file-upload');
+        const fileNameDisplay = document.getElementById('file-name-display');
+        if (fileUpload) {
+            fileUpload.addEventListener('change', () => {
+                fileNameDisplay.textContent = fileUpload.files.length > 0
+                    ? `Selected: ${fileUpload.files[0].name}`
+                    : '';
+            });
+        }
+    });
+
+    async function analyzeNews() {
+
+        const textInput = document.getElementById('news-text').value.trim();
+        const fileInput = document.getElementById('file-upload');
+
+        if (!textInput && (!fileInput || fileInput.files.length === 0)) {
+            alert("Please provide text or a file!");
+            return;
+        }
+
+        const formData = new FormData();
+        if (textInput) formData.append("news_text", textInput);
+        if (fileInput && fileInput.files.length > 0) formData.append("news_file", fileInput.files[0]);
+
+        const analyzeBtn = document.querySelector('button[onclick="analyzeNews()"]');
+        const originalText = analyzeBtn.innerHTML;
+        analyzeBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-3"></i>Analyzing...';
+        analyzeBtn.disabled = true;
+
+        try {
+            const response = await fetch("/analyze", {
+                method: "POST",
+                body: formData
+            });
+            const data = await response.json();
+
+            if (data.error) {
+                alert(data.error);
+                return;
+            }
+
+            const resultBox = document.getElementById('result-box');
+            const resultIcon = document.getElementById('result-icon');
+            const resultTitle = document.getElementById('result-title');
+            const confidenceScore = document.getElementById('confidence-score');
+            const resultMessage = document.getElementById('result-message');
+
+            const type = data.result.toLowerCase().includes("real") ? "real" : "fake";
+
+            resultBox.className = type === "real"
+                ? 'max-w-md mx-auto rounded-2xl border-2 p-8 text-center result-real animate-slide-up'
+                : 'max-w-md mx-auto rounded-2xl border-2 p-8 text-center result-fake animate-slide-up';
+
+            resultIcon.innerHTML = type === "real" ? "✅" : "❌";
+            resultTitle.textContent = data.result;
+            confidenceScore.textContent = data.confidence ? `${data.confidence}%` : "";
+            resultMessage.textContent = data.reason;
+
+            document.getElementById('result-section').classList.remove('hidden');
+            document.getElementById('result-section').scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        } catch (err) {
+            alert("Error analyzing news: " + err);
+        } finally {
+            analyzeBtn.innerHTML = originalText;
+            analyzeBtn.disabled = false;
+        }
+    }
+    </script>
+
+</body>
+</html>
