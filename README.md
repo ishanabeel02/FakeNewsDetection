@@ -59,4 +59,4 @@ python app.py
 
 ## Author
 
-Built by Isha, supervised by Dr. Umair Muneer.
+Built by Isha.
