@@ -28,12 +28,23 @@ A web interface for detecting fake news using a hybrid Machine Learning + LLM sy
 ## Results
 
 <img width="889" height="590" alt="image" src="https://github.com/user-attachments/assets/de032a62-71fd-4db9-981e-9e1fa5720acd" />
-                        Model  Accuracy  Precision    Recall        F1
-0  Hybrid (ML + LLM fallback)  0.884000   0.891304  0.897810  0.894545
-1               Random Forest  0.879790   0.870255  0.924404  0.896513
-2         Logistic Regression  0.860356   0.853627  0.907734  0.879850
-3               Decision Tree  0.850311   0.868482  0.865284  0.866880
-4           Gradient Boosting  0.832951   0.791486  0.955030  0.865601
+## Model Performance Comparison
+
+The fake news detection system was evaluated using multiple machine learning algorithms, as well as a hybrid approach that combines traditional machine learning with an LLM fallback. The following metrics were used:
+
+- **Accuracy:** Overall correctness of the model.
+- **Precision:** Percentage of predicted fake news that was actually fake.
+- **Recall:** Percentage of actual fake news correctly identified.
+- **F1-Score:** Harmonic mean of precision and recall.
+
+| Model | Accuracy | Precision | Recall | F1-Score |
+|-------|---------:|----------:|-------:|---------:|
+| **Hybrid (ML + LLM Fallback)** | **88.40%** | **89.13%** | 89.78% | 89.45% |
+| Random Forest | 87.98% | 87.03% | **92.44%** | **89.65%** |
+| Logistic Regression | 86.04% | 85.36% | 90.77% | 87.99% |
+| Decision Tree | 85.03% | 86.85% | 86.53% | 86.69% |
+| Gradient Boosting | 83.30% | 79.15% | 95.50% | 86.56% |
+
 
 ## Dataset
 
